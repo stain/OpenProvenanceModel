@@ -1,83 +1,67 @@
 package org.openprovenance.rdf;
 
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.JAXBElement;
-
-import java.io.ByteArrayOutputStream;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
-
-import java.util.List;
-import java.util.LinkedList;
-import java.util.Set;
-import java.util.HashMap;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
 
-import org.openprovenance.model.OPMGraph; 
-import org.openprovenance.model.Edge; 
-import org.openprovenance.model.Annotation; 
-import org.openprovenance.model.Account; 
-import org.openprovenance.model.AccountRef; 
-import org.openprovenance.model.Processes; 
-import org.openprovenance.model.Node; 
-import org.openprovenance.model.Agent; 
-import org.openprovenance.model.Ref; 
-import org.openprovenance.model.Identifiable; 
-import org.openprovenance.model.Process; 
-import org.openprovenance.model.Artifact; 
-import org.openprovenance.model.Used; 
-import org.openprovenance.model.Role; 
-import org.openprovenance.model.Property; 
-import org.openprovenance.model.EmbeddedAnnotation; 
-import org.openprovenance.model.WasGeneratedBy; 
-import org.openprovenance.model.WasTriggeredBy; 
-import org.openprovenance.model.WasDerivedFrom; 
-import org.openprovenance.model.WasControlledBy; 
-import org.openprovenance.model.OPMUtilities; 
-import org.openprovenance.model.OPMFactory; 
-import org.openprovenance.model.OPMDeserialiser; 
-
-
-
+import org.apache.log4j.Logger;
+import org.openprovenance.model.Account;
+import org.openprovenance.model.AccountRef;
+import org.openprovenance.model.Agent;
+import org.openprovenance.model.Annotation;
+import org.openprovenance.model.Artifact;
+import org.openprovenance.model.Edge;
+import org.openprovenance.model.EmbeddedAnnotation;
+import org.openprovenance.model.Identifiable;
+import org.openprovenance.model.Node;
+import org.openprovenance.model.OPMDeserialiser;
+import org.openprovenance.model.OPMFactory;
+import org.openprovenance.model.OPMGraph;
+import org.openprovenance.model.OPMUtilities;
+import org.openprovenance.model.Process;
+import org.openprovenance.model.Property;
+import org.openprovenance.model.Role;
+import org.openprovenance.model.Used;
+import org.openprovenance.model.WasControlledBy;
+import org.openprovenance.model.WasDerivedFrom;
+import org.openprovenance.model.WasGeneratedBy;
+import org.openprovenance.model.WasTriggeredBy;
+import org.tupeloproject.kernel.Context;
+import org.tupeloproject.kernel.OperatorException;
+import org.tupeloproject.kernel.UnionContext;
+import org.tupeloproject.kernel.impl.MemoryContext;
+import org.tupeloproject.kernel.impl.ResourceContext;
 import org.tupeloproject.provenance.ProvenanceAccount;
-import org.tupeloproject.provenance.ProvenanceRole;
 import org.tupeloproject.provenance.ProvenanceAgent;
-import org.tupeloproject.provenance.ProvenanceProcess;
 import org.tupeloproject.provenance.ProvenanceArtifact;
-import org.tupeloproject.provenance.ProvenanceDerivedArc;
-import org.tupeloproject.provenance.ProvenanceUsedArc;
-import org.tupeloproject.provenance.ProvenanceGeneratedArc;
 import org.tupeloproject.provenance.ProvenanceControlledArc;
+import org.tupeloproject.provenance.ProvenanceDerivedArc;
+import org.tupeloproject.provenance.ProvenanceException;
+import org.tupeloproject.provenance.ProvenanceGeneratedArc;
+import org.tupeloproject.provenance.ProvenanceProcess;
+import org.tupeloproject.provenance.ProvenanceRole;
 import org.tupeloproject.provenance.ProvenanceTriggeredArc;
+import org.tupeloproject.provenance.ProvenanceUsedArc;
 import org.tupeloproject.provenance.impl.ProvenanceContextFacade;
+import org.tupeloproject.provenance.impl.RdfProvenanceAccount;
+import org.tupeloproject.provenance.impl.RdfProvenanceAgent;
+import org.tupeloproject.provenance.impl.RdfProvenanceArc;
 import org.tupeloproject.provenance.impl.RdfProvenanceArtifact;
 import org.tupeloproject.provenance.impl.RdfProvenanceProcess;
-import org.tupeloproject.provenance.impl.RdfProvenanceArc;
 import org.tupeloproject.provenance.impl.RdfProvenanceRole;
-import org.tupeloproject.provenance.impl.RdfProvenanceAgent;
-import org.tupeloproject.provenance.impl.RdfProvenanceAccount;
-
-import org.tupeloproject.rdf.Vocabulary.Rdf;
-
 import org.tupeloproject.rdf.Resource;
 import org.tupeloproject.rdf.Triple;
+import org.tupeloproject.rdf.Vocabulary.Rdf;
 import org.tupeloproject.rdf.xml.RdfXml;
-import org.tupeloproject.kernel.Context;
-import org.tupeloproject.kernel.UnionContext;
-import org.tupeloproject.kernel.impl.ResourceContext;
-import org.tupeloproject.kernel.impl.MemoryContext;
-import org.tupeloproject.kernel.impl.FileContext;
-import org.tupeloproject.kernel.impl.BasicLocalContext;
-import org.tupeloproject.util.Xml;
-import org.tupeloproject.kernel.OperatorException; 
-import org.apache.log4j.Logger;
-
-
-import org.tupeloproject.provenance.impl.RdfProvenanceArtifact;
 
 
 public class OPMXml2Rdf {
@@ -90,7 +74,7 @@ public class OPMXml2Rdf {
 
     static OPMFactory oFactory=new OPMFactory();
 
-    public void convert (OPMGraph graph, String filename) throws OperatorException, IOException {
+    public void convert (OPMGraph graph, String filename) throws OperatorException, IOException, ProvenanceException {
         convert(graph,new FileOutputStream(new File(filename)));
     }
     
@@ -110,7 +94,7 @@ public class OPMXml2Rdf {
 
 
 
-    public void convert (OPMGraph graph, OutputStream out) throws OperatorException, IOException {
+    public void convert (OPMGraph graph, OutputStream out) throws OperatorException, IOException, ProvenanceException {
       
 
         //BasicLocalContext mc = new BasicLocalContext(); //MemoryContext
@@ -508,14 +492,14 @@ public class OPMXml2Rdf {
     }
 
 
-    public void convert (String inFilename, String outFilename) throws OperatorException, IOException, JAXBException {
+    public void convert (String inFilename, String outFilename) throws OperatorException, IOException, JAXBException, ProvenanceException {
         OPMDeserialiser deserial=OPMDeserialiser.getThreadOPMDeserialiser();
         OPMGraph graph=deserial.deserialiseOPMGraph(new File(inFilename));
         convert(graph,outFilename);
     }
     
 
-    public static void main(String [] args) throws OperatorException, IOException, JAXBException {
+    public static void main(String [] args) throws OperatorException, IOException, JAXBException, ProvenanceException {
         if ((args==null) || (args.length!=2)) {
             System.out.println("Usage: opmxml2rdf fileIn fileOut");
             return;
