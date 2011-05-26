@@ -7,7 +7,9 @@ import java.io.IOException;
 import java.io.File;
 import java.io.FileOutputStream;
 
+import org.apache.log4j.chainsaw.Main;
 import org.tupeloproject.provenance.ProvenanceAccount;
+import org.tupeloproject.provenance.ProvenanceException;
 import org.tupeloproject.provenance.ProvenanceRole;
 import org.tupeloproject.provenance.ProvenanceProcess;
 import org.tupeloproject.provenance.ProvenanceArtifact;
@@ -26,9 +28,8 @@ import org.tupeloproject.kernel.OperatorException;
 
 
 public class Tutorial {
-    public void example (String [] args) throws OperatorException, IOException {
-      
 
+    public void example (String [] args) throws OperatorException, IOException, ProvenanceException {
         MemoryContext mc = new MemoryContext(); //
         
         ResourceContext rc = new ResourceContext("http://example.org/data/","/provenanceExample/");
