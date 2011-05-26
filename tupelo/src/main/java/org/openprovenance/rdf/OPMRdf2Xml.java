@@ -91,28 +91,28 @@ public class OPMRdf2Xml {
         return convert(RdfXml.parse(in));
     }
 
-    HashMap<String,Account> accountTable=new HashMap();
+    HashMap<String,Account> accountTable=new HashMap<String, Account>();
     HashMap<String,Process> processTable=new HashMap();
-    HashMap<String,Artifact> artifactTable=new HashMap();
-    HashMap<String,Agent> agentTable=new HashMap();
+    HashMap<String,Artifact> artifactTable=new HashMap<String, Artifact>();
+    HashMap<String,Agent> agentTable=new HashMap<String, Agent>();
 
-    Set<ProvenanceUsedArc> usedArcs=new HashSet();
-    Set<ProvenanceGeneratedArc> generatedArcs=new HashSet();
-    Set<ProvenanceTriggeredArc> triggeredArcs=new HashSet();
-    Set<ProvenanceControlledArc> controlledArcs=new HashSet();
-    Set<ProvenanceDerivedArc> derivedArcs=new HashSet();
+    Set<ProvenanceUsedArc> usedArcs=new HashSet<ProvenanceUsedArc>();
+    Set<ProvenanceGeneratedArc> generatedArcs=new HashSet<ProvenanceGeneratedArc>();
+    Set<ProvenanceTriggeredArc> triggeredArcs=new HashSet<ProvenanceTriggeredArc>();
+    Set<ProvenanceControlledArc> controlledArcs=new HashSet<ProvenanceControlledArc>();
+    Set<ProvenanceDerivedArc> derivedArcs=new HashSet<ProvenanceDerivedArc>();
     
     Resource hasAnnotation=Resource.uriRef(OPMXml2Rdf.OPM_HAS_ANNOTATION);
     Resource hasAccount=Resource.uriRef(OPMXml2Rdf.OPM_HAS_ACCOUNT);
 
     public OPMGraph convert (Set<Triple> triples) throws OperatorException, IOException {
 
-        Collection<Account> accounts=new LinkedList();
-        Collection<Overlaps> overlaps=new LinkedList();
-        Collection<Process> processes=new LinkedList();
-        Collection<Artifact> artifacts=new LinkedList();
-        Collection<Agent> agents=new LinkedList();
-        Collection<Object> edges=new LinkedList();
+        Collection<Account> accounts=new LinkedList<Account>();
+        Collection<Overlaps> overlaps=new LinkedList<Overlaps>();
+        Collection<Process> processes=new LinkedList<Process>();
+        Collection<Artifact> artifacts=new LinkedList<Artifact>();
+        Collection<Agent> agents=new LinkedList<Agent>();
+        Collection<Object> edges=new LinkedList<Object>();
 
         OPMGraph graph=pFactory.newOPMGraph(accounts,
                                             overlaps,
@@ -135,7 +135,7 @@ public class OPMRdf2Xml {
 
         ProvenanceContextFacade pcf = new ProvenanceContextFacade(mc);
 
-        Collection<Resource> done=new LinkedList();
+        Collection<Resource> done=new LinkedList<Resource>();
 
         // Find all elements
         for (Triple triple: triples) {
@@ -225,14 +225,14 @@ public class OPMRdf2Xml {
                                                        Context context)
         throws org.tupeloproject.kernel.OperatorException {
 
-        List<EmbeddedAnnotation> embedded=new LinkedList();
+        List<EmbeddedAnnotation> embedded=new LinkedList<EmbeddedAnnotation>();
         for (Resource annotation: annotations) {
             SubjectFacade af=new SubjectFacade(annotation, context) ;
 
 
             
             java.util.Set<Resource> accounts=af.getObjects(hasAccount);
-            List<AccountRef> accRefs=new LinkedList();
+            List<AccountRef> accRefs=new LinkedList<AccountRef>();
             for (Resource account: accounts) {
                 RdfProvenanceAccount rdfA=pcf.getAccount(account);
                 Account a=getAccount(rdfA);
@@ -243,9 +243,9 @@ public class OPMRdf2Xml {
 
 
             Set<Triple> triples=af.getTriples();
-            List<Property> properties=new LinkedList();
+            List<Property> properties=new LinkedList<Property>();
 
-            List<JAXBElement<? extends EmbeddedAnnotation>> subAnnotations=new LinkedList();
+            List<JAXBElement<? extends EmbeddedAnnotation>> subAnnotations=new LinkedList<JAXBElement<? extends EmbeddedAnnotation>>();
             for (Triple t: triples) {
                 Resource predicate=t.getPredicate();
                 String predicateUri=predicate.getUri().toString();
@@ -263,7 +263,7 @@ public class OPMRdf2Xml {
                 } else if (predicateUri.equals(OPMXml2Rdf.OPM_HAS_ANNOTATION)) {
                     System.out.println("*********************** Found annotation of annotation !");
                     Resource annotationOfAnnotation=t.getObject();
-                    Set<Resource> rl=new HashSet();
+                    Set<Resource> rl=new HashSet<Resource>();
                     rl.add(annotationOfAnnotation);
                     for (EmbeddedAnnotation ann: convertAnnotations(rl,pcf,context)) {
                         subAnnotations.add(pFactory.compactAnnotation(ann));
