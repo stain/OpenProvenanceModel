@@ -2,14 +2,14 @@
   <parent>
     <artifactId>specs</artifactId>
     <groupId>org.openprovenance</groupId>
-    <version>1.1.8-SNAPSHOT</version>
+    <version>1.1.9-SNAPSHOT</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.openprovenance</groupId>
   <artifactId>opm-tupelo</artifactId>
   <name>Open Provenance Model RDF binding with Tupelo</name>
-  <version>1.1.8-SNAPSHOT</version>
+  <version>1.1.9-SNAPSHOT</version>
   <packaging>jar</packaging>
   <description>RDF binding by means of Tupelo.</description>
 
@@ -36,14 +36,14 @@
     <dependency>
       <groupId>org.tupeloproject</groupId>
       <artifactId>tupelo-cet</artifactId>
-      <version>2.5</version>
+      <version>2.6</version>
     </dependency>
 
 
     <dependency>
       <groupId>org.openprovenance</groupId>
       <artifactId>opm-core</artifactId>
-      <version>1.1.8-SNAPSHOT</version>
+      <version>1.1.9-SNAPSHOT</version>
     </dependency>
   </dependencies>
 
